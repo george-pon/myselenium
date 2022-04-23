@@ -54,7 +54,7 @@ RUN apt-get install -y \
         w3m \
         wget \
         zip \
-        chromium-driver chromium python3 python3-pip \
+        chromium-driver chromium python3 python3-pip fonts-ipafont fonts-noto-cjk \
     && apt-get clean all
 
 # install python selenium library
@@ -71,15 +71,8 @@ RUN curl -fLO https://github.com/george-pon/yamlsort/releases/download/${YAMLSOR
 ADD docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
 RUN chmod +x /usr/local/bin/docker-entrypoint.sh
 
-ADD bashrc /root/.bashrc
-ADD bash_profile /root/.bash_profile
-ADD vimrc /root/.vimrc
-ADD emacsrc /root/.emacs
 ADD bin /usr/local/bin
 RUN chmod +x /usr/local/bin/*.sh
-
-ENV HOME /root
-ENV ENV $HOME/.bashrc
 
 # add sudo user
 # https://qiita.com/iganari/items/1d590e358a029a1776d6 Dockerコンテナ内にsudoユーザを追加する - Qiita
@@ -92,7 +85,15 @@ RUN groupadd -g 1000 debian && \
     echo 'debian ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
 
 # use normal user debian
-# USER debian
+USER debian
+
+ENV HOME /home/debian
+ADD bashrc       $HOME/.bashrc
+ADD bash_profile $HOME/.bash_profile
+ADD vimrc        $HOME/.vimrc
+ADD emacsrc      $HOME/.emacs
+ENV ENV          $HOME/.bashrc
+WORKDIR          $HOME
 
 CMD ["/usr/local/bin/docker-entrypoint.sh"]
 
