@@ -26,9 +26,7 @@ RUN apt-get install -y man-db  manpages && apt-get clean
 
 # install etc utils
 RUN apt-get install -y \
-        ansible \
         bash-completion \
-        connect-proxy \
         curl \
         dnsutils \
         emacs-nox \
@@ -43,6 +41,7 @@ RUN apt-get install -y \
         netcat \
         net-tools \
         procps \
+        python3 \
         python3-pip \
         rsync \
         sudo \
@@ -54,20 +53,15 @@ RUN apt-get install -y \
         w3m \
         wget \
         zip \
-        chromium-driver chromium python3 python3-pip fonts-ipafont fonts-noto-cjk \
+        chromium-driver \
+        chromium \
+        fonts-ipafont fonts-noto-cjk \
     && apt-get clean all
 
 # install python selenium library
 RUN pip3 install selenium
 
-# install yamlsort see https://github.com/george-pon/yamlsort
-ENV YAMLSORT_VERSION v0.1.19
-RUN curl -fLO https://github.com/george-pon/yamlsort/releases/download/${YAMLSORT_VERSION}/linux_amd64_yamlsort_${YAMLSORT_VERSION}.tar.gz && \
-    tar xzf linux_amd64_yamlsort_${YAMLSORT_VERSION}.tar.gz && \
-    chmod +x linux_amd64_yamlsort && \
-    mv linux_amd64_yamlsort /usr/bin/yamlsort && \
-    rm linux_amd64_yamlsort_${YAMLSORT_VERSION}.tar.gz
-
+# add docker entry point shell
 ADD docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
 RUN chmod +x /usr/local/bin/docker-entrypoint.sh
 
@@ -88,6 +82,7 @@ RUN groupadd -g 1000 debian && \
 USER debian
 
 ENV HOME /home/debian
+ADD inputrc      $HOME/.inputrc
 ADD bashrc       $HOME/.bashrc
 ADD bash_profile $HOME/.bash_profile
 ADD vimrc        $HOME/.vimrc
