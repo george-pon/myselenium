@@ -7,6 +7,6 @@ function docker-run-myselenium() {
     ${WINPTY_CMD} docker run -i -t --rm \
         -e http_proxy=${http_proxy} -e https_proxy=${https_proxy} -e no_proxy="${no_proxy}" \
         --cap-add SYS_ADMIN \
-        docker.io/georgesan/myselenium:latest
+        docker.io/georgesan/myselenium:latest "$@"
 }
 docker-run-myselenium
